@@ -1,71 +1,44 @@
-let currentPlayer = 'X'; // Player starts first in single-player mode
-let gameBoard = ['', '', '', '', '', '', '', '', ''];
-const winConditions = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-];
-
-function makeMove(cellIndex) {
-    if (gameBoard[cellIndex] === '' && currentPlayer === 'X') {
-        gameBoard[cellIndex] = currentPlayer;
-        document.getElementsByClassName('cell')[cellIndex].innerText = currentPlayer;
-        if (checkWin()) {
-            showResult(`Vetri! Player ${currentPlayer} wins!`);
-        } else if (gameBoard.every(cell => cell !== '')) {
-            showResult('Draw! Puthu Velayattu?');
-        } else {
-            currentPlayer = 'O';
-            setTimeout(opponentMove, 500); // Introduce delay for better game experience
-        }
-    }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #87ceeb; /* Sky blue background color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
-function opponentMove() {
-    let emptyCells = gameBoard.reduce((acc, cell, index) => {
-        if (cell === '') acc.push(index);
-        return acc;
-    }, []);
-
-    let randomIndex = Math.floor(Math.random() * emptyCells.length);
-    let randomCellIndex = emptyCells[randomIndex];
-
-    gameBoard[randomCellIndex] = 'O';
-    document.getElementsByClassName('cell')[randomCellIndex].innerText = 'O';
-    if (checkWin()) {
-        showResult('Opponent wins! Puthu Velayattu?');
-    } else if (gameBoard.every(cell => cell !== '')) {
-        showResult('Draw! Puthu Velayattu?');
-    }
-    currentPlayer = 'X'; // After opponent's move, it's user's turn
+.container {
+  text-align: center;
 }
 
-function checkWin() {
-    return winConditions.some(condition => {
-        return condition.every(index => gameBoard[index] === currentPlayer);
-    });
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-gap: 5px;
+  margin-bottom: 20px;
 }
 
-function resetGame() {
-    currentPlayer = 'X'; // Reset to player starts first
-    gameBoard = ['', '', '', '', '', '', '', '', ''];
-    Array.from(document.getElementsByClassName('cell')).forEach(cell => {
-        cell.innerText = '';
-        cell.style.backgroundColor = '#fff'; // Reset background color
-    });
-    hideResult();
+.cell {
+  width: 100px;
+  height: 100px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
 }
 
-function showResult(message) {
-    document.getElementById('resultMessage').innerText = message;
-    document.getElementById('resultScreen').classList.add('show');
+.result-screen {
+  display: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
 }
 
-function hideResult() {
-    document.getElementById('resultScreen').classList.remove('show');
+.result-screen.show {
+  display: block;
 }
